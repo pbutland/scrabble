@@ -1,0 +1,14 @@
+{
+  "name": "scrabble-words",
+  "packageManager": "yarn@4.6.0",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/app.ts --bundle --outdir=dist --sourcemap --format=esm --loader:.css=css --metafile=meta.json",
+    "start": "esbuild src/app.ts --bundle --outdir=dist --sourcemap --format=esm --loader:.css=css --servedir=. --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.1",
+    "esbuild": "^0.25.5",
+    "typescript": "^5.8.3"
+  }
+}

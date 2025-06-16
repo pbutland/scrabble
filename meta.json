@@ -1,0 +1,42 @@
+{
+  "inputs": {
+    "src/tile-utils.ts": {
+      "bytes": 1116,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/app.ts": {
+      "bytes": 21223,
+      "imports": [
+        {
+          "path": "src/tile-utils.ts",
+          "kind": "import-statement",
+          "original": "./tile-utils"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "dist/app.js.map": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 30775
+    },
+    "dist/app.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "src/app.ts",
+      "inputs": {
+        "src/tile-utils.ts": {
+          "bytesInOutput": 427
+        },
+        "src/app.ts": {
+          "bytesInOutput": 12510
+        }
+      },
+      "bytes": 13005
+    }
+  }
+}

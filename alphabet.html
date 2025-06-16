@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scrabble Tile Alphabet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .tiles-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .tile {
+            width: 100px;
+            height: 100px;
+            transition: transform 0.2s;
+        }
+        .tile:hover {
+            transform: scale(1.1);
+        }
+        @media (max-width: 600px) {
+            .tiles-container {
+                gap: 10px;
+            }
+            .tile {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tiles-container">
+        <img class="tile" src="./tiles/A.svg" alt="Letter A">
+        <img class="tile" src="./tiles/B.svg" alt="Letter B">
+        <img class="tile" src="./tiles/C.svg" alt="Letter C">
+        <img class="tile" src="./tiles/D.svg" alt="Letter D">
+        <img class="tile" src="./tiles/E.svg" alt="Letter E">
+        <img class="tile" src="./tiles/F.svg" alt="Letter F">
+        <img class="tile" src="./tiles/G.svg" alt="Letter G">
+        <img class="tile" src="./tiles/H.svg" alt="Letter H">
+        <img class="tile" src="./tiles/I.svg" alt="Letter I">
+        <img class="tile" src="./tiles/J.svg" alt="Letter J">
+        <img class="tile" src="./tiles/K.svg" alt="Letter K">
+        <img class="tile" src="./tiles/L.svg" alt="Letter L">
+        <img class="tile" src="./tiles/M.svg" alt="Letter M">
+        <img class="tile" src="./tiles/N.svg" alt="Letter N">
+        <img class="tile" src="./tiles/O.svg" alt="Letter O">
+        <img class="tile" src="./tiles/P.svg" alt="Letter P">
+        <img class="tile" src="./tiles/Q.svg" alt="Letter Q">
+        <img class="tile" src="./tiles/R.svg" alt="Letter R">
+        <img class="tile" src="./tiles/S.svg" alt="Letter S">
+        <img class="tile" src="./tiles/T.svg" alt="Letter T">
+        <img class="tile" src="./tiles/U.svg" alt="Letter U">
+        <img class="tile" src="./tiles/V.svg" alt="Letter V">
+        <img class="tile" src="./tiles/W.svg" alt="Letter W">
+        <img class="tile" src="./tiles/X.svg" alt="Letter X">
+        <img class="tile" src="./tiles/Y.svg" alt="Letter Y">
+        <img class="tile" src="./tiles/Z.svg" alt="Letter Z">
+    </div>
+</body>
+</html>

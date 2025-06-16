@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Scrabble Tile Visualizer</title>
+    <script src="./dist/app.js" type="module"></script>
+    <style>
+        :root {
+            /* Light mode (default) */
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #4285f4;
+            --button-bg: #4285f4;
+            --button-hover: #3367d6;
+            --highlight-shadow: rgba(0,0,0,0.05);
+            --highlight-shadow-focus: rgba(0,0,0,0.15);
+            --row-bg: rgba(240,240,240,0.5);
+        }
+
+        body.dark-mode {
+            /* Dark mode */
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --border-color: #5c9aff;
+            --button-bg: #5c9aff;
+            --button-hover: #80b1ff;
+            --highlight-shadow: rgba(255,255,255,0.05);
+            --highlight-shadow-focus: rgba(255,255,255,0.1);
+            --row-bg: rgba(40,40,40,0.5);
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                max-width: 95%;
+                padding: 15px;
+            }
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+        }
+        
+        form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            box-shadow: 0 2px 4px var(--highlight-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 480px) {
+            input[type="text"] {
+                padding: 10px;
+                font-size: 16px;
+            }
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--button-hover);
+            box-shadow: 0 4px 8px var(--highlight-shadow-focus);
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: var(--button-hover);
+        }
+        
+        .theme-selector {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .theme-selector label {
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        .theme-selector input[type="radio"] {
+            margin-right: 5px;
+        }
+        
+        #result {
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        #tile-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .permutation-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 20px 10px;
+            background-color: var(--row-bg);
+            border-radius: 8px;
+            position: relative; /* For positioning the floating download button */
+        }
+        
+        .tile-word {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 15px;
+            justify-content: center;
+        }
+        
+        .tile-svg {
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .tile-svg-content {
+            width: 100px;
+            height: auto;
+        }
+        
+        .tile-svg:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Share Button Styles */
+        #share-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            margin-left: 10px;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #share-button:hover:not(:disabled) {
+            background-color: var(--button-hover);
+        }
+        
+        #share-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 30px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Download Button Styles */
+        .download-svg-button {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            box-shadow: 0 2px 5px var(--highlight-shadow-focus);
+            opacity: 0.8;
+        }
+        
+        .download-svg-button:hover {
+            background-color: var(--button-hover);
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        
+        .download-svg-button:active {
+            transform: scale(0.95);
+        }
+        
+        /* Responsive styles for different screen sizes */
+        @media (max-width: 768px) {
+            .tile-svg-content {
+                width: 80px;
+            }
+            
+            .tile-word {
+                margin: 0 10px;
+            }
+            
+            .download-svg-button {
+                width: 36px;
+                height: 36px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tile-svg-content {
+                width: 60px;
+            }
+            
+            .tile-word {
+                margin: 0 6px;
+            }
+            
+            .permutation-row {
+                padding: 5px 5px 40px; /* Extra padding at bottom for download button */
+            }
+            
+            .tile-svg {
+                margin: 3px;
+            }
+            
+            .download-svg-button {
+                width: 32px;
+                height: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Scrabble Tile Visualizer</h1>
+    <div class="theme-selector">
+        <label>
+            <input type="radio" name="theme" value="light" checked> Light Mode
+        </label>
+        <label>
+            <input type="radio" name="theme" value="dark"> Dark Mode
+        </label>
+    </div>
+    
+    <p>Enter a word or phrase to visualize it using Scrabble letter tiles.</p>
+    
+    <form id="word-form">
+        <input type="text" id="word-input" placeholder="Enter a word (e.g. scrabble, muzkiks)" autocomplete="off" autofocus required>
+        <button id="share-button" type="button" title="Copy shareable link to clipboard" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+            </svg>
+        </button>
+        <button type="submit" style="display: none;">Visualize</button>
+    </form>
+    
+    <div id="toast" class="toast">Link copied to clipboard!</div>
+    
+    <div id="result"></div>
+    <div id="tile-container"></div>
+</body>
+</html>
