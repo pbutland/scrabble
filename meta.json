@@ -6,7 +6,7 @@
       "format": "esm"
     },
     "src/app.ts": {
-      "bytes": 21223,
+      "bytes": 18699,
       "imports": [
         {
           "path": "src/tile-utils.ts",
@@ -22,7 +22,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 30775
+      "bytes": 27200
     },
     "dist/app.js": {
       "imports": [],
@@ -33,10 +33,10 @@
           "bytesInOutput": 427
         },
         "src/app.ts": {
-          "bytesInOutput": 12510
+          "bytesInOutput": 10853
         }
       },
-      "bytes": 13005
+      "bytes": 11348
     }
   }
 }

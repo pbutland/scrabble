@@ -24,9 +24,6 @@ function makeSvgResponsive(svgContent) {
 function downloadPermutationAsSVG(permutationRow, word) {
   const wordContainers = permutationRow.querySelectorAll(".tile-word");
   if (!wordContainers.length) return;
-  const computedStyle = getComputedStyle(document.body);
-  const bgColor = computedStyle.getPropertyValue("--bg-color").trim();
-  const textColor = computedStyle.getPropertyValue("--text-color").trim();
   const allSvgElements = permutationRow.querySelectorAll(".tile-svg-content");
   if (!allSvgElements.length) return;
   const getOriginalSvgDimensions = (svgElement) => {
@@ -83,11 +80,6 @@ function downloadPermutationAsSVG(permutationRow, word) {
   combinedSvg.setAttribute("height", maxHeight.toString());
   combinedSvg.setAttribute("viewBox", `0 0 ${totalWidth} ${maxHeight}`);
   combinedSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  bgRect.setAttribute("width", "100%");
-  bgRect.setAttribute("height", "100%");
-  bgRect.setAttribute("fill", computedStyle.backgroundColor);
-  combinedSvg.appendChild(bgRect);
   const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
   let currentX = 10;
   wordContainers.forEach((wordContainer) => {
@@ -104,31 +96,6 @@ function downloadPermutationAsSVG(permutationRow, word) {
       const parser = new DOMParser();
       const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
       const originalSvg = svgDoc.documentElement;
-      const replaceVarsInElement = (el) => {
-        if (el.tagName.toLowerCase() === "text" && el.hasAttribute("fill")) {
-          const fillValue = el.getAttribute("fill");
-          if (fillValue?.includes("var(--")) {
-            el.setAttribute("fill", computedStyle.color);
-          }
-        }
-        if (el.tagName.toLowerCase() === "rect" && el.hasAttribute("fill")) {
-          const fillValue = el.getAttribute("fill");
-          if (fillValue?.includes("var(--")) {
-            if (fillValue?.includes("--bg-color")) {
-              el.setAttribute("fill", computedStyle.backgroundColor);
-            }
-          }
-        }
-        if (el.hasAttribute("stroke")) {
-          const strokeValue = el.getAttribute("stroke");
-          if (strokeValue?.includes("var(--")) {
-            el.setAttribute("stroke", computedStyle.color);
-          }
-        }
-        Array.from(el.children).forEach((child) => {
-          replaceVarsInElement(child);
-        });
-      };
       let contentElement = originalSvg.querySelector("g");
       const elementX = wordStartX + wordCurrentX;
       if (contentElement) {
@@ -138,7 +105,6 @@ function downloadPermutationAsSVG(permutationRow, word) {
           "transform",
           `translate(${elementX}, ${(maxHeight - height) / 2}) ${currentTransform}`
         );
-        replaceVarsInElement(clonedContent);
         wordGroup.appendChild(clonedContent);
       } else {
         const newGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -146,9 +112,6 @@ function downloadPermutationAsSVG(permutationRow, word) {
         Array.from(originalSvg.childNodes).forEach((child) => {
           if (child.nodeType === Node.ELEMENT_NODE && child.tagName.toLowerCase() !== "svg") {
             const importedNode = document.importNode(child, true);
-            if (importedNode.nodeType === Node.ELEMENT_NODE) {
-              replaceVarsInElement(importedNode);
-            }
             newGroup.appendChild(importedNode);
           }
         });
@@ -211,7 +174,7 @@ function processWordInput(word, elementContainer, resultDiv) {
   }
   const tilePermutations = convertToTiles(word);
   if (tilePermutations && tilePermutations.length > 0) {
-    resultDiv.textContent = `Visualizing "${word}" with Scrabble tiles`;
+    resultDiv.textContent = ``;
     if (shareButton) {
       shareButton.disabled = false;
     }
