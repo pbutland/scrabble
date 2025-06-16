@@ -16,11 +16,6 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
     const wordContainers = permutationRow.querySelectorAll('.tile-word');
     if (!wordContainers.length) return;
     
-    // Get computed colors from CSS variables for SVG export
-    const computedStyle = getComputedStyle(document.body);
-    const bgColor = computedStyle.getPropertyValue('--bg-color').trim();
-    const textColor = computedStyle.getPropertyValue('--text-color').trim();
-    
     // Get all SVG elements for validation
     const allSvgElements = permutationRow.querySelectorAll('.tile-svg-content');
     if (!allSvgElements.length) return;
@@ -111,13 +106,6 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
     combinedSvg.setAttribute('viewBox', `0 0 ${totalWidth} ${maxHeight}`);
     combinedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     
-    // Set background color based on current theme (using actual RGB color instead of variable)
-    const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    bgRect.setAttribute('width', '100%');
-    bgRect.setAttribute('height', '100%');
-    bgRect.setAttribute('fill', computedStyle.backgroundColor);
-    combinedSvg.appendChild(bgRect);
-    
     // Group to hold all the elements
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     
@@ -150,40 +138,6 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
             const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
             const originalSvg = svgDoc.documentElement;
             
-            // Replace CSS variables with computed values in the SVG content
-            const replaceVarsInElement = (el: Element) => {
-                // Handle text elements
-                if (el.tagName.toLowerCase() === 'text' && el.hasAttribute('fill')) {
-                    const fillValue = el.getAttribute('fill');
-                    if (fillValue?.includes('var(--')) {
-                        el.setAttribute('fill', computedStyle.color);
-                    }
-                }
-                
-                // Handle rect elements
-                if (el.tagName.toLowerCase() === 'rect' && el.hasAttribute('fill')) {
-                    const fillValue = el.getAttribute('fill');
-                    if (fillValue?.includes('var(--')) {
-                        if (fillValue?.includes('--bg-color')) {
-                            el.setAttribute('fill', computedStyle.backgroundColor);
-                        }
-                    }
-                }
-                
-                // Handle stroke attributes on any element
-                if (el.hasAttribute('stroke')) {
-                    const strokeValue = el.getAttribute('stroke');
-                    if (strokeValue?.includes('var(--')) {
-                        el.setAttribute('stroke', computedStyle.color);
-                    }
-                }
-                
-                // Process children recursively
-                Array.from(el.children).forEach(child => {
-                    replaceVarsInElement(child);
-                });
-            };
-            
             // Extract content from original SVG directly
             // Most element SVGs have their content in a g tag
             let contentElement = originalSvg.querySelector('g');
@@ -200,9 +154,6 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
                 clonedContent.setAttribute('transform', 
                     `translate(${elementX}, ${(maxHeight - height) / 2}) ${currentTransform}`);
                 
-                // Replace variables
-                replaceVarsInElement(clonedContent);
-                
                 // Add to the word group
                 wordGroup.appendChild(clonedContent);
             } else {
@@ -214,9 +165,6 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
                 Array.from(originalSvg.childNodes).forEach(child => {
                     if (child.nodeType === Node.ELEMENT_NODE && (child as Element).tagName.toLowerCase() !== 'svg') {
                         const importedNode = document.importNode(child, true);
-                        if (importedNode.nodeType === Node.ELEMENT_NODE) {
-                            replaceVarsInElement(importedNode as Element);
-                        }
                         newGroup.appendChild(importedNode);
                     }
                 });
