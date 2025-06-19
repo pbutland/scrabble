@@ -73,7 +73,7 @@ function downloadPermutationAsSVG(permutationRow, word) {
   if (wordCount > 1) {
     totalWidth += (wordCount - 1) * 20;
   }
-  totalWidth += wordCount * 10;
+  totalWidth += (wordCount - 1) * 10;
   maxHeight += 20;
   const combinedSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   combinedSvg.setAttribute("width", totalWidth.toString());

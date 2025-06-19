@@ -95,7 +95,7 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
     // Account for the extra spacing that's added after the last element of each word
     // When positioning elements, we add extra 10px spacing after every element including the last one
     // but that space isn't needed for the last element in each word
-    totalWidth += wordCount * 10;
+    totalWidth += (wordCount - 1) * 10;
     
     maxHeight += 20;   // 10px padding on top and bottom
     
